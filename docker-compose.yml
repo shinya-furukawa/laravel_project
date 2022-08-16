@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  app:
+    container_name: laravel_app
+    build: ./php
+    volumes:
+      - ./php/laravel-app:/var/www/laravel-app
+  nginx:
+    image: nginx 
+    container_name: laravel_nginx
+    ports:
+      - 8000:80 
+    volumes:
+      - .:/var/www
+      - ./nginx_conf/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /var/www
+    depends_on:
+      - app
+  db:
+    container_name: laravel_postgres
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
